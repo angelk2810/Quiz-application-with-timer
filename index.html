@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Responsive Quiz with Timer</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="app-header" role="banner">
+      <h1 class="app-title">QuickQuiz</h1>
+      <p class="app-subtitle">Test your knowledge. Beat the clock.</p>
+    </header>
+
+    <main id="app" class="app" role="main">
+      <!-- Quiz Panel -->
+      <section id="quiz" class="panel active" aria-label="Quiz panel">
+        <div class="quiz-container">
+          <div class="quiz-meta">
+            <div class="timer" aria-live="polite" aria-atomic="true">
+              <span class="timer-icon" aria-hidden="true">⏱</span>
+              <span id="time">00</span>s
+            </div>
+
+            <div class="score" aria-live="polite" aria-atomic="true">
+              Score:
+              <span id="score">0</span>
+            </div>
+          </div>
+
+          <div class="progress-wrap" aria-label="Quiz progress">
+            <div id="progressBar" class="progress-bar">
+              <span id="progressIndicator" class="progress-indicator"></span>
+            </div>
+            <div class="progress-text">
+              <span id="progressCount">0</span>/<span id="totalCount">0</span>
+            </div>
+          </div>
+
+          <article class="question-card" aria-live="polite">
+            <h2 id="questionText" class="question-text">Loading question…</h2>
+
+            <div class="options" role="group" aria-label="Answer options">
+              <!-- Buttons are injected by JS -->
+            </div>
+          </article>
+
+          <div class="controls">
+            <button id="nextBtn" class="btn next" type="button" aria-label="Next question">
+              Next
+            </button>
+          </div>
+
+          <aside class="marking-note" aria-live="polite">
+            Negative marking: −0.25 for wrong answers. Skips/unanswered: 0.
+          </aside>
+        </div>
+      </section>
+
+      <!-- Result Panel -->
+      <section id="result" class="panel" aria-label="Result panel">
+        <div class="result-container">
+          <div class="result-summary">
+            <h2>Quiz Completed</h2>
+            <p>
+              Final Score:
+              <strong id="finalScore">0</strong>
+            </p>
+            <p>
+              Correct: <strong id="correctCount">0</strong> • Incorrect:
+              <strong id="incorrectCount">0</strong> • Skipped:
+              <strong id="skippedCount">0</strong>
+            </p>
+            <div class="result-actions">
+              <button id="reviewBtn" class="btn primary" type="button">Review Answers</button>
+              <button id="restartBtn" class="btn" type="button">Restart Quiz</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Review Panel -->
+      <section id="review" class="panel" aria-label="Review panel">
+        <div class="review-container">
+          <header class="review-header">
+            <h2>Answer Review</h2>
+            <p class="review-sub">
+              See what you picked and the correct answers.
+            </p>
+          </header>
+
+          <div id="reviewList" class="review-list" aria-live="polite">
+            <!-- Review items injected by JS -->
+          </div>
+
+          <div class="review-actions">
+            <button id="restartBtn2" class="btn" type="button">Restart Quiz</button>
+            <button id="backToResultsBtn" class="btn ghost" type="button">Back to Results</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer" role="contentinfo">
+      <small>Built with HTML, CSS, and Vanilla JavaScript</small>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

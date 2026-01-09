@@ -1,0 +1,537 @@
+/* =========================================================
+   Premium Quiz UI — Visual Redesign (No logic changes)
+   - Glassmorphism card, gradient background
+   - Modern typography & spacing
+   - Smooth interactions & feedback
+   - Mobile-first responsive
+   - Uses CSS variables for theme colors
+   ========================================================= */
+
+/* ---------- Theme Variables ---------- */
+:root {
+  /* Base */
+  --bg-start: #0b1024;
+  --bg-end: #0e172a;
+  --bg-accent: #152a4f;
+
+  /* Gradient */
+  --gradient-1: linear-gradient(135deg, #101a38 0%, #132b4f 40%, #143c5d 100%);
+  --gradient-2: radial-gradient(1000px 600px at 20% 20%, rgba(75, 0, 130, 0.25), rgba(0, 191, 255, 0.08));
+
+  /* Palette */
+  --text: #eef2f7;
+  --muted: #a9b2c3;
+  --primary: #6ea8fe;
+  --primary-strong: #4c87f9;
+  --accent: #9b8cf4; /* purple accent */
+  --success: #3bd57f;
+  --danger: #ff6363;
+  --warning: #f7b84b;
+
+  /* Surfaces */
+  --surface: rgba(255, 255, 255, 0.06);
+  --card: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.14);
+
+  /* Rounding & Shadows */
+  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --shadow-lg: 0 40px 80px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 20px 40px rgba(0, 0, 0, 0.35);
+  --glow-success: 0 0 0 8px rgba(59, 213, 127, 0.18);
+  --glow-danger: 0 0 0 8px rgba(255, 99, 99, 0.18);
+
+  /* Animations */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-fade: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-fast: 180ms var(--ease-soft);
+  --t-med: 280ms var(--ease-soft);
+  --t-slow: 420ms var(--ease-soft);
+
+  /* Sizing */
+  --container-max: 920px;
+  --content-max: 780px;
+}
+
+/* ---------- Reset & Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", "Poppins", "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--text);
+  background:
+    var(--gradient-2),
+    linear-gradient(135deg, #0c1230 0%, #0d1538 50%, #0f183f 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------- Layout & Header/Footer ---------- */
+.app-header,
+.app-footer {
+  text-align: center;
+  padding: 1.2rem 1rem;
+}
+
+.app-title {
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  font-size: 1.85rem;
+  background: linear-gradient(90deg, #fff, #cfe0ff 60%, #b7a8ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.app-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.app {
+  display: grid;
+  place-items: center;
+  padding: 1.4rem;
+}
+
+/* Panels */
+.panel {
+  display: none;
+  width: 100%;
+}
+
+.panel.active {
+  display: block;
+  animation: fadeInUp var(--t-slow);
+}
+
+/* ---------- Glass Card Containers ---------- */
+.quiz-container,
+.result-container,
+.review-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.06)),
+    var(--gradient-1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(16px) saturate(1.2);
+  padding: 1.2rem;
+}
+
+/* Inner content cap for readability */
+.question-card,
+.result-summary,
+.review-list {
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+
+/* ---------- Meta: Timer & Score ---------- */
+.quiz-meta {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.8rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.timer,
+.score {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  color: #eaf2ff;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.06));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: 0.55rem 0.9rem;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--t-fast), box-shadow var(--t-med);
+}
+
+.timer-icon {
+  font-size: 1rem;
+}
+
+.timer:hover,
+.score:hover {
+  transform: translateY(-2px);
+}
+
+.timer.pulse {
+  animation: timerPulse 800ms var(--ease-soft);
+}
+
+@keyframes timerPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- Progress ---------- */
+.progress-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.8rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  position: relative;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.progress-indicator {
+  position: absolute;
+  inset: 0 100% 0 0;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 999px;
+  transform: translateZ(0);
+  transition: inset var(--t-slow);
+}
+
+.progress-text {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.progress-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.14), transparent);
+  mix-blend-mode: screen;
+}
+
+/* ---------- Question Card ---------- */
+.question-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--t-slow), box-shadow var(--t-slow);
+}
+
+.question-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
+}
+
+.question-text {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  line-height: 1.45;
+}
+
+/* ---------- Options Grid ---------- */
+.options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+}
+
+.option-btn {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  text-align: left;
+  background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.06));
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: 0.95rem 1.1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition:
+    transform var(--t-fast),
+    background var(--t-fast),
+    border-color var(--t-fast),
+    box-shadow var(--t-med);
+  will-change: transform, box-shadow;
+}
+
+.option-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.08));
+}
+
+.option-btn:active {
+  transform: translateY(0) scale(0.995);
+}
+
+.option-btn::after {
+  /* subtle ripple on click using gradient flash */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(180px 180px at var(--rx, 50%) var(--ry, 50%), rgba(255,255,255,0.18), transparent 60%);
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+.option-btn:active::after {
+  opacity: 1;
+}
+
+.option-label {
+  display: inline-block;
+  font-weight: 800;
+  color: var(--muted);
+  width: 1.6rem;
+  text-align: center;
+}
+
+.option-text {
+  display: inline-block;
+  font-weight: 600;
+}
+
+.option-state {
+  justify-self: end;
+  font-weight: 800;
+  color: transparent;
+}
+
+/* Disabled (post-selection) */
+.option-btn.disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Correct / Incorrect feedback with soft glow */
+.option-btn.correct {
+  background: linear-gradient(180deg, rgba(59,213,127,0.18), rgba(59,213,127,0.12));
+  border-color: rgba(59,213,127,0.65);
+  box-shadow: var(--glow-success);
+}
+
+.option-btn.incorrect {
+  background: linear-gradient(180deg, rgba(255,99,99,0.18), rgba(255,99,99,0.12));
+  border-color: rgba(255,99,99,0.65);
+  box-shadow: var(--glow-danger);
+}
+
+/* Minimal professional icons */
+.option-btn.correct .option-state {
+  color: var(--success);
+}
+.option-btn.incorrect .option-state {
+  color: var(--danger);
+}
+
+/* ---------- Controls ---------- */
+.controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.08));
+  color: var(--text);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform var(--t-fast), background var(--t-fast), border-color var(--t-fast), box-shadow var(--t-med);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.1));
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.995);
+}
+
+.btn:disabled,
+.btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn.primary {
+  border-color: rgba(110, 168, 254, 0.5);
+  background: linear-gradient(180deg, rgba(110,168,254,0.35), rgba(76,135,249,0.28));
+  box-shadow: 0 12px 28px rgba(76, 135, 249, 0.25);
+}
+
+.btn.ghost {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Specific next button width */
+.btn.next {
+  min-width: 128px;
+}
+
+/* ---------- Marking Note ---------- */
+.marking-note {
+  margin-top: 0.9rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+/* ---------- Results ---------- */
+.result-summary {
+  text-align: center;
+  padding: 1.2rem 0.6rem;
+}
+
+.result-summary h2 {
+  margin: 0 0 0.4rem;
+  font-weight: 800;
+}
+
+.result-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 0.9rem;
+}
+
+/* ---------- Review ---------- */
+.review-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.review-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.95rem;
+}
+
+.review-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.95rem;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--t-med), box-shadow var(--t-med);
+}
+
+.review-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.36);
+}
+
+.review-q {
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+}
+
+.review-answers {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.97rem;
+}
+
+.answer-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.answer-label {
+  min-width: 128px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.answer-value.correct {
+  color: var(--success);
+  font-weight: 800;
+}
+
+.answer-value.incorrect {
+  color: var(--danger);
+  font-weight: 800;
+}
+
+.review-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+/* ---------- Footer ---------- */
+.app-footer {
+  color: var(--muted);
+}
+
+/* ---------- Micro-animations ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Subtle question transition (applies when panel becomes active) */
+.panel.active .question-card {
+  animation: fadeInUp var(--t-med);
+}
+
+/* ---------- Responsive ---------- */
+@media (min-width: 640px) {
+  .options {
+    grid-template-columns: 1fr 1fr;
+  }
+  .quiz-meta {
+    grid-template-columns: auto 1fr auto;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 1024px) {
+  .question-text {
+    font-size: 1.35rem;
+  }
+}
+
+/* ---------- Optional: click ripple position helper ----------
+   If you want the ripple to originate from click position, add:
+   optionsContainer.addEventListener('click', e => {
+     const btn = e.target.closest('.option-btn');
+     if (!btn) return;
+     const r = btn.getBoundingClientRect();
+     btn.style.setProperty('--rx', `${e.clientX - r.left}px`);
+     btn.style.setProperty('--ry', `${e.clientY - r.top}px`);
+   });
+   (No need if JS must remain untouched; current ripple centers by default.)
+-------------------------------------------------------------- */
